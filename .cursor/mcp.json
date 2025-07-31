@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx @playwright/mcp@latest --storage-state tests/.auth/user.json",
+      "env": {}
+    },
+    "postgres": {
+      "command": "npx",
+      "args": [
+        "@henkey/postgres-mcp-server",
+        "--connection-string",
+        "postgresql://postgres:password@localhost:5432/build"
+      ]
+    }
+  }
+}
