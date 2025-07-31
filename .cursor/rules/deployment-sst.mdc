@@ -1,0 +1,61 @@
+---
+globs: sst.config.ts
+alwaysApply: false
+---
+# SST Deployment Configuration
+
+## SST Configuration Structure
+
+The [sst.config.ts](mdc:sst.config.ts) defines:
+
+- App name and stage
+- AWS region and profile
+- Infrastructure resources
+- Environment bindings
+
+## Resource Access
+
+```typescript
+// Access SST resources via Resource object
+import { Resource } from 'sst';
+
+// Database connection
+const dbUrl = Resource.AppDatabase.host;
+const dbPassword = Resource.AppDatabase.password;
+
+// App URL
+const appUrl = Resource.WebApp.url;
+```
+
+## Environment Variables
+
+- Development: Use `.env` file
+- Production: SST binds resources automatically
+- Access via `Resource` object, not `process.env`
+
+## Common Resources
+
+- **AppDatabase**: Aurora PostgreSQL cluster
+- **WebApp**: TanStack Start application
+- **Vpc**: Network configuration
+
+## Deployment Commands
+
+```bash
+# Development
+bun sst dev
+
+# Deploy to stage
+bun sst deploy --stage production
+
+# Remove resources
+bun sst remove --stage production
+```
+
+## Best Practices
+
+- Never hardcode AWS resource IDs
+- Use Resource bindings for all AWS services
+- Keep sensitive data in SST secrets
+- Use different stages for environments
+- Test locally with `sst dev`

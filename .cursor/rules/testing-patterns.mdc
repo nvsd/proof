@@ -1,0 +1,58 @@
+---
+globs: tests/**/*.ts,*.test.ts
+alwaysApply: false
+---
+# Testing Patterns
+
+## Playwright Test Structure
+
+```typescript
+import { test, expect } from '@playwright/test';
+import { TestUser } from './lib/factory/test-user-factory';
+import { TestUtils } from './lib/test-utils';
+
+test.describe('Feature Name', () => {
+  const utils = new TestUtils();
+  const testUser = TestUser.fromTestInfo(__filename, 'test-name');
+
+  test.beforeEach(async ({ page }) => {
+    await utils.createAndAuthenticateUser(page, testUser);
+  });
+
+  test.afterEach(async () => {
+    await utils.cleanupUser(testUser.email);
+  });
+
+  test('should do something', async ({ page }) => {
+    // Test implementation
+  });
+});
+```
+
+## Test Factories
+
+- Use TestUser factory for creating test users
+- Use TestSession factory for session management
+- Factories include unique test IDs for isolation
+- Always clean up test data after tests
+
+## Test Utilities
+
+- TestUtils provides common operations
+- Use repository pattern for test data management
+- Prefer database operations over UI for setup
+- Use auth.setup.ts for authenticated state
+
+## Test Repositories
+
+- Extend BaseTestRepo for common operations
+- Include cascade deletion handling
+- Provide test-specific helper methods
+- Handle cleanup in beforeDelete hooks
+
+## Best Practices
+
+- Isolate test data using unique identifiers
+- Clean up all created data
+- Use page objects for complex UI interactions
+- Test both success and error paths

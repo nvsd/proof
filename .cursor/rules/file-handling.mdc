@@ -1,0 +1,61 @@
+---
+globs: **/files.ts,**/s3.ts,**/*file*
+alwaysApply: false
+---
+# File Upload and Storage Patterns
+
+## File Upload Flow
+
+1. Client selects file via drag-drop or file input
+2. Generate signed URL from S3
+3. Upload file directly to S3
+4. Store file metadata in database
+5. Return file reference to client
+
+## Using PageFileDrop Component
+
+```typescript
+<PageFileDrop afterUpload={handleAfterUpload}>
+  <div>Drop files here or click to upload</div>
+</PageFileDrop>
+```
+
+## S3 Integration
+
+```typescript
+// Get signed URL for upload
+const urlResult = await getSignedUrl(bucket, key);
+if (!urlResult.success) return urlResult;
+
+// Upload file
+const uploadResult = await uploadFile(file, fileName);
+if (!uploadResult.success) return uploadResult;
+
+// Store in database
+const dbResult = await createFile(fileData, userId);
+```
+
+## File Validation
+
+- Validate file size before upload
+- Check file type/extension
+- Generate unique file names
+- Store original filename separately
+
+## Database Schema
+
+Files table includes:
+
+- User association
+- Original filename
+- S3 key
+- File size
+- MIME type
+- Upload timestamp
+
+## Security
+
+- Always validate user ownership
+- Use signed URLs with expiration
+- Scope S3 permissions appropriately
+- Validate file content when necessary

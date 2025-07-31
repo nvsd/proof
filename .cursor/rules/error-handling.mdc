@@ -1,0 +1,64 @@
+---
+alwaysApply: true
+---
+# Error Handling with Result Pattern
+
+## Result Type Usage
+
+All operations that can fail must return `Result<T>` from [src/lib/result.ts](mdc:src/lib/result.ts).
+
+```typescript
+import { Result, success, fail } from '@/lib/result';
+
+export async function doSomething(): Promise<Result<Data>> {
+  try {
+    const data = await riskyOperation();
+    return success(data);
+  } catch (error) {
+    return fail(error);
+  }
+}
+```
+
+## Handling Results
+
+```typescript
+const result = await doSomething();
+if (!result.success) {
+  // Handle error - result.error contains the error
+  return result; // Propagate error
+}
+// Safe to use result.data
+const data = result.data;
+```
+
+## Validation Pattern
+
+```typescript
+// Validate early and return
+const validation = await validateInput(data);
+if (!validation.success) return validation;
+
+// Continue with validated data
+const validData = validation.data;
+```
+
+## Error Propagation
+
+- Return errors early using guard clauses
+- Propagate Result types up the call stack
+- Only handle errors where you can meaningfully recover
+- Log errors with the module logger
+
+## Common Patterns
+
+```typescript
+// Chaining operations
+const userResult = await getUser(id);
+if (!userResult.success) return userResult;
+
+const sessionResult = await createSession(userResult.data.id);
+if (!sessionResult.success) return sessionResult;
+
+return success({ user: userResult.data, session: sessionResult.data });
+```

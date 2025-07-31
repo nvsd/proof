@@ -1,0 +1,38 @@
+---
+globs: *.ts,*.tsx
+---
+# TypeScript Conventions
+
+## Import Order
+
+1. External dependencies
+2. Aliases/absolute imports
+3. Relative imports
+4. Types (if separate)
+
+## Type Conventions
+
+- Always export types alongside their related functions
+- Use `type` for type aliases, `interface` for object shapes
+- Prefer explicit return types for functions
+- Use z.infer for Zod schema types
+
+## Naming Conventions
+
+- PascalCase: Components, Types, Interfaces
+- camelCase: Functions, variables, file names
+- kebab-case: Route file names
+- UPPER_SNAKE_CASE: Environment variables
+
+## File Organization
+
+- Export main function/component as named export
+- Group related types at the top
+- Keep validation schemas near their usage
+
+## Function Patterns
+
+- Use async/await over promises
+- Return Result<T> for operations that can fail
+- Validate inputs early with Zod schemas
+- Use early returns for error cases

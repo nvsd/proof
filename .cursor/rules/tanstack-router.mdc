@@ -1,0 +1,78 @@
+---
+globs: src/routes/**,src/router.tsx,**/routeTree.gen.ts
+---
+# TanStack Router Patterns
+
+## Route File Structure
+
+- Client routes: `.tsx` files in `src/routes/`
+- Server routes: `.ts` files for API endpoints
+- Route tree is auto-generated in `routeTree.gen.ts`
+- Don't edit generated files
+
+## Route Creation Pattern
+
+```typescript
+// Client route (index.tsx)
+import { createRoute } from '@tanstack/react-router';
+import { rootRoute } from './__root';
+
+export const route = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/',
+  component() {
+    return <div>Page content</div>;
+  },
+});
+
+// Server route (api.ts)
+import { createServerRoute } from '@tanstack/react-router/server';
+
+export const route = createServerRoute({
+  method: 'GET',
+  handler: async ({ request }) => {
+    // Handle request
+    return Response.json({ data });
+  },
+});
+```
+
+## Protected Routes
+
+```typescript
+export const route = createRoute({
+  beforeLoad: async () => {
+    const session = await getCurrentSession();
+    if (!session.success || !session.data.session) {
+      throw redirect({ to: '/login' });
+    }
+  },
+  loader: async () => {
+    const session = await getCurrentSession();
+    return { user: session.data.user };
+  },
+  component({ data }) {
+    return <Dashboard user={data.user} />;
+  },
+});
+```
+
+## Route Organization
+
+- Nested routes use folder structure
+- Index routes use `index.tsx`
+- Dynamic segments use `[param].tsx`
+- Layout routes use `__layout.tsx`
+
+## Navigation
+
+```typescript
+import { Link, useNavigate } from '@tanstack/react-router';
+
+// Declarative
+<Link to="/about">About</Link>
+
+// Programmatic
+const navigate = useNavigate();
+navigate({ to: '/dashboard' });
+```

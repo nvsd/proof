@@ -1,0 +1,53 @@
+---
+globs: **/db/**/*.ts,**/repo/*.ts
+---
+# Database and Repository Patterns
+
+## Repository Pattern
+
+All database operations go through repository files in `src/lib/server/db/repo/`.
+
+### Repository Structure
+
+```typescript
+// 1. Export types
+export type Entity = typeof table.$inferSelect;
+export type NewEntity = typeof table.$inferInsert;
+
+// 2. Validation schemas and functions
+const schema = z.object({...});
+export async function validateEntity(data: unknown): Promise<Result<Entity>> {...}
+
+// 3. CRUD operations
+export async function createEntity(data: unknown): Promise<Result<Entity>> {...}
+export async function getEntity(id: number): Promise<Result<Entity>> {...}
+```
+
+## Error Handling
+
+- All database operations return `Result<T>`
+- Use try-catch blocks around database calls
+- Return `fail(error)` on errors
+- Return `success(data)` on success
+
+## Validation Pattern
+
+```typescript
+const result = await validateNewEntity(data);
+if (!result.success) return result;
+// Safe to use result.data
+```
+
+## Transaction Pattern
+
+- Use db.transaction() for multi-step operations
+- Validate all inputs before starting transaction
+- Rollback on any error
+
+## Test Repository Pattern
+
+Test repositories extend BaseTestRepo and provide:
+
+- Factory integration
+- Cascade deletion handling
+- Test-specific helper methods

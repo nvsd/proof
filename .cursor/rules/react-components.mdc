@@ -1,0 +1,53 @@
+---
+globs: *.tsx,**/components/**
+---
+# React Component Patterns
+
+## Component Structure
+
+```typescript
+// 1. Imports
+import { cn } from '@/lib/classes';
+
+// 2. Types/Props
+type ComponentProps = {
+  className?: string;
+  children: React.ReactNode;
+};
+
+// 3. Named export function
+export function Component({ className, ...props }: ComponentProps) {
+  return <div className={cn('base-classes', className)} {...props} />;
+}
+```
+
+## shadcn/ui Components
+
+- All UI primitives are in `src/components/shadcn/`
+- Use Radix UI primitives when available
+- Always include className prop with cn() utility
+- Support ref forwarding where appropriate
+- Follow the existing pattern for variants
+
+## Styling
+
+- Use Tailwind CSS classes
+- Use cn() utility from `@/lib/classes` for conditional classes
+- Keep component-specific styles minimal
+- Prefer composition over complex components
+
+## File Drop Pattern
+
+```typescript
+// Use the existing PageFileDrop wrapper for drag-and-drop
+<PageFileDrop afterUpload={handleAfterUpload}>
+  {children}
+</PageFileDrop>
+```
+
+## Route Components
+
+- Route components go in `src/routes/`
+- Use TanStack Router's createRoute
+- Server routes use .ts extension
+- Client routes use .tsx extension

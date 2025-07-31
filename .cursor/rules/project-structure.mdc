@@ -1,0 +1,33 @@
+---
+alwaysApply: true
+---
+# Project Structure Guide
+
+This is a **TanStack Start** project with SST deployment, using PostgreSQL, Drizzle ORM, and Google OAuth.
+
+## Key Entry Points
+
+- Server: [src/server.ts](mdc:src/server.ts)
+- Client: [src/client.tsx](mdc:src/client.tsx)
+- Router: [src/router.tsx](mdc:src/router.tsx)
+- SST Config: [sst.config.ts](mdc:sst.config.ts)
+
+## Directory Structure
+
+- `src/routes/` - TanStack route files (both .tsx and .ts for server routes)
+- `src/components/` - React components
+  - `shadcn/` - shadcn/ui components
+  - `layout/` - Layout components
+- `src/lib/` - Utility functions and business logic
+  - `server/` - Server-side utilities
+    - `db/` - Database connection and repositories
+- `tests/` - Playwright tests and test utilities
+- `drizzle/` - Database migrations
+
+## Important Patterns
+
+- All database operations use the Result<T> pattern from [src/lib/result.ts](mdc:src/lib/result.ts)
+- Repository pattern for database access in `src/lib/server/db/repo/`
+- Test factories and utilities in `tests/lib/`
+- Session-based authentication with cookies
+- S3 for file uploads with signed URLs

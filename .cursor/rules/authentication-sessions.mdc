@@ -1,0 +1,52 @@
+---
+globs: **/sessions.ts,**/oauth.ts,**/login/**
+---
+# Authentication and Session Management
+
+## Authentication Flow
+
+1. User initiates login via `/login` route
+2. OAuth redirect to Google with PKCE
+3. Callback validates code and state
+4. Create/update user in database
+5. Generate session token and set cookie
+6. Redirect to dashboard
+
+## Session Management
+
+```typescript
+// Validate session
+const result = await getCurrentSession();
+if (!result.success || !result.data.session) {
+  // Redirect to login
+}
+
+// Create session
+const token = generateSessionToken();
+const session = await createSession(token.data, userId);
+setSessionTokenCookie(token.data, session.data.expiresAt);
+
+// Invalidate session
+await invalidateSession(sessionId);
+deleteSessionTokenCookie();
+```
+
+## Cookie Patterns
+
+- Use httpOnly, secure cookies
+- Set appropriate SameSite policy
+- Include expiry matching session expiry
+- Use the cookie utilities in `src/lib/server/cookie.ts`
+
+## OAuth State Management
+
+- Generate and store state with PKCE
+- Validate state on callback
+- Clean up state after use
+- Handle errors gracefully
+
+## Protected Routes
+
+- Check session in route loaders
+- Return 401/redirect for invalid sessions
+- Pass user data to components via props
