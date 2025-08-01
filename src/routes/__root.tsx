@@ -8,7 +8,7 @@ import { getCurrentSession } from '@/lib/server/sessions';
 export const Route = createRootRoute({
   beforeLoad: async ({ location }) => {
     const result = await getCurrentSession();
-    if (!result.success) throw redirect({ to: '/login' });
+    if (!result.success && location.pathname !== '/login') throw redirect({ to: '/login' });
     if (result.success && location.pathname === '/login') throw redirect({ to: '/' });
   },
   head,
